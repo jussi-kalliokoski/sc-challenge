@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/cloudlist.css" />
+	<script id="found-tracks-template" type="text/x-handlebars-template">
+{{#each tracks}}
+<div class="found-track">
+	<div class="title">
+		<a href="http://soundcloud.com/{{user.permalink}}/{{permalink}}"
+		>{{title}}</a>
+	</div>
+	<div class="username">by
+		<a href="http://soundcloud.com/{{user.permalink}}">{{user.username}}</a>
+	</div>
+	<button class="btn add">
+		<i class="icon-plus-sign"></i>
+	</button>
+</div>
+{{/each}}
+	</script>
+</head>
+<body>
+	<form id="searchbox" onsubmit="doSearch(this.search.value); return false" class="form-search">
+		<input class="input-medium search-query" id="search" type="search" placeholder="Type here to search!"  />
+		<button type="submit" class="btn">Search!</button>
+		<div id="results"></div>
+	</form>
+
+	<script src="http://connect.soundcloud.com/sdk.js"></script>
+	<script src="js/handlebars.js"></script>
+	<script>
+function template (name, context) {
+	if (!template[name]) {
+		template[name] = Handlebars.compile(
+			document.getElementById(name + '-template').innerHTML
+		)
+	}
+
+	return template[name](context)
+}
+
+var search = document.getElementById('search')
+var results = document.getElementById('results')
+
+function doSearch (query) {
+	SC.get('/tracks', { q: query }, function (tracks) {
+		results.innerHTML = template('found-tracks', {
+			tracks: tracks
+		})
+
+		console.log(tracks)
+	})
+	
+}
+
+SC.initialize({
+	client_id: '8b747e71b3a505f84053f2076e40727b'
+})
+	</script>
+</body>
+</html>

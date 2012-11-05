@@ -1,0 +1,41 @@
+#searchbox {
+	display: block;
+	position: relative;
+	width: 960px;
+	margin: 5px auto;
+}
+
+#results {
+	position: absolute;
+	left: 4px;
+	top: 30px;
+	width: 480px;
+	border-radius: 4px;
+	background: #fdfdfd;
+	box-shadow: 0 0 2px #333;
+	max-height: 600px;
+	overflow-y: auto;
+}
+
+.found-track {
+	position: relative;
+	margin: 3px;
+	padding: 8px;
+}
+
+.found-track:not(:last-child) {
+	border-bottom: 1px solid #333;
+}
+
+.found-track button {
+	position: relative;
+	float: right;
+	clear: right;
+	margin-top: -40px;
+}
+
+.ctr {
+	display: block;
+	width: auto;
+	margin: 0px auto;
+}
