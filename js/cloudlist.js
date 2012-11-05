@@ -70,6 +70,13 @@ function Track (elem) {
 
 	this.elem = fragment.childNodes[1]
 	this.elem.track = this
+
+	this.buttons = {
+		play: this.elem.querySelector('.btn.play'),
+		remove: this.elem.querySelector('.btn.remove'),
+		up: this.elem.querySelector('.btn.up'),
+		down: this.elem.querySelector('.btn.down')
+	}
 }
 
 Track.prototype = {
@@ -82,6 +89,34 @@ Track.prototype = {
 		}, function () {
 			Playlist.add(track, index)
 		})
+	},
+
+	move: function (index) {
+		var track = this
+		var oldIndex = Playlist.list.indexOf(track)
+
+		if (index === 'up') index = oldIndex - 1
+		else if (index === 'down') index = oldIndex + 1
+
+		if (index < 0 || index === oldIndex) return
+		if (index >= Playlist.list.length) {
+			index = Playlist.list.length - 1
+		}
+
+		actions.dodo(function () {
+			Playlist.remove(track)
+			Playlist.add(track, index)
+		}, function () {
+			Playlist.remove(track)
+			Playlist.add(track, oldIndex)
+		})
+	},
+
+	update: function () {
+		var index = Playlist.list.indexOf(this)
+
+		this.buttons.up.disabled = !index
+		this.buttons.down.disabled = index === Playlist.list.length - 1
 	}
 }
 
@@ -97,11 +132,21 @@ var Playlist = {
 			playlist.appendChild(track.elem)
 			this.list.push(track)
 		}
+
+		this.updateButtons()
 	},
 
 	remove: function (track) {
 		this.list.splice(this.list.indexOf(track), 1)
 		playlist.removeChild(track.elem)
+
+		this.updateButtons()
+	},
+
+	updateButtons: function () {
+		this.list.forEach(function (track) {
+			track.update()
+		})
 	}
 }
 
