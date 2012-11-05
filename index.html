@@ -6,7 +6,14 @@
 	<link rel="stylesheet" href="css/cloudlist.css" />
 	<script id="found-tracks-template" type="text/x-handlebars-template">
 {{#each tracks}}
-<div class="found-track">
+<div
+	class="found-track"
+	data-id="{{id}}"
+	data-title="{{title}}"
+	data-username="{{user.username}}"
+	data-permalink="{{permalink}}"
+	data-user-permalink="{{user.permalink}}"
+>
 	<div class="title">
 		<a href="http://soundcloud.com/{{user.permalink}}/{{permalink}}"
 		>{{title}}</a>
@@ -14,50 +21,55 @@
 	<div class="username">by
 		<a href="http://soundcloud.com/{{user.permalink}}">{{user.username}}</a>
 	</div>
-	<button class="btn add">
+	<button class="btn add" onclick="FoundTrack.addToPlaylist(this.parentNode)">
 		<i class="icon-plus-sign"></i>
 	</button>
 </div>
 {{/each}}
 	</script>
+	<script id="list-track-template" type="text/x-handlebars-template">
+<div 
+	class="list-track"
+	data-id="{{id}}"
+	data-title="{{title}}"
+	data-username="{{username}}"
+	data-permalink="{{permalink}}"
+	data-user-permalink="{{userPermalink}}"
+>
+	<div class="title">
+		<a href="http://soundcloud.com/{{userPermalink}}/{{permalink}}"
+		>{{title}}</a>
+	</div>
+	<div class="username">by
+		<a href="http://soundcloud.com/{{userPermalink}}">{{username}}</a>
+	</div>
+	<div class="btn-group">
+		<button class="btn play">
+			<i class="icon-play"></i>
+		</button>
+		<button class="btn remove" onclick="this.parentNode.parentNode.track.remove()">
+			<i class="icon-remove-sign"></i>
+		</button>
+	</div>
+</div>
+	</script>
 </head>
 <body>
-	<form id="searchbox" onsubmit="doSearch(this.search.value); return false" class="form-search">
-		<input class="input-medium search-query" id="search" type="search" placeholder="Type here to search!"  />
-		<button type="submit" class="btn">Search!</button>
+	<form id="searchbox" class="form-search">
+		<input class="input-medium search-query" name="search" type="search" placeholder="Type here to search!"  />
+		<button type="submit" class="btn"><i class="icon-search"></i> Search!</button>
+		<button class="btn" name="addAll" disabled><i class="icon-plus-sign"></i> Add all</button>
 		<div id="results"></div>
 	</form>
 
+	<div id="playlist">
+		
+	</div>
+
 	<script src="http://connect.soundcloud.com/sdk.js"></script>
 	<script src="js/handlebars.js"></script>
-	<script>
-function template (name, context) {
-	if (!template[name]) {
-		template[name] = Handlebars.compile(
-			document.getElementById(name + '-template').innerHTML
-		)
-	}
-
-	return template[name](context)
-}
-
-var search = document.getElementById('search')
-var results = document.getElementById('results')
-
-function doSearch (query) {
-	SC.get('/tracks', { q: query }, function (tracks) {
-		results.innerHTML = template('found-tracks', {
-			tracks: tracks
-		})
-
-		console.log(tracks)
-	})
-	
-}
-
-SC.initialize({
-	client_id: '8b747e71b3a505f84053f2076e40727b'
-})
-	</script>
+	<script src="js/mousetrap.min.js"></script>
+	<script src="js/undo-list.js"></script>
+	<script src="js/cloudlist.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 #searchbox {
 	display: block;
 	position: relative;
-	width: 960px;
+	width: auto;
 	margin: 5px auto;
 }
 
@@ -15,6 +15,16 @@
 	box-shadow: 0 0 2px #333;
 	max-height: 600px;
 	overflow-y: auto;
+	z-index: 999;
+}
+
+.list-track {
+	position: relative;
+	border-radius: 4px;
+	background: #fdfdfd;
+	box-shadow: 0 0 2px #333;
+	margin: 3px;
+	padding: 8px;
 }
 
 .found-track {
@@ -32,10 +42,4 @@
 	float: right;
 	clear: right;
 	margin-top: -40px;
-}
-
-.ctr {
-	display: block;
-	width: auto;
-	margin: 0px auto;
 }
