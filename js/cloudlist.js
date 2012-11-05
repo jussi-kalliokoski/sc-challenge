@@ -149,8 +149,6 @@ searchbox.addAll.onclick = function (e) {
 		results.getElementsByClassName('found-track')
 	))
 
-console.log('wat')
-
 	e.preventDefault()
 }
 
