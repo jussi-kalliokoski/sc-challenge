@@ -1,3 +1,4 @@
+void function (exports) {
 var actions = new UndoList()
 var nowPlaying = null
 
@@ -594,3 +595,11 @@ Mousetrap.bind(['command+r', 'ctrl+r'], function (e) {
 
 	e.preventDefault()
 })
+
+/* export some variables */
+exports.Track = Track
+exports.FoundTrack = FoundTrack
+exports.Playlist = Playlist
+exports.Player = Player
+
+}(window)
