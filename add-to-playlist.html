@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/cloudlist.css" />
+	<script src="/js/playlists.js"></script>
+</head>
+<body style="padding: 5px">
+	<h1>Select playlist: <button class="btn-primary btn" onclick="closeOverlay()">
+		Cancel
+	</button></h1>
+	<script>
+function closeOverlay () {
+	document.body.innerHTML = ''
+	window.parent.postMessage('close-playlist-overlay', '*')
+}
+
+var playlists = Playlists.getAll()
+
+/* get the id from the query string */
+var id = location.search
+id = ~~(id.substring(id.indexOf('id=') + 3).split('&')[0])
+if (!id) throw closeOverlay()
+
+playlists.forEach(function (playlist) {
+	var elem = document.createElement('button')
+	elem.className = 'btn'
+	elem.href = 'javascript: void 0'
+
+	elem.appendChild(document.createTextNode(playlist.name))
+
+
+	elem.onclick = function () {
+		/* make sure we don't overwrite stuff written elsewhere */
+		Playlists.load()
+
+		var pl = Playlists.getByShortName(playlist.shortname)
+		pl.list.push(id)
+
+		Playlists.save()
+
+		document.body.innerHTML = '<h1>Added to playlist!</h1>'
+
+		setTimeout(closeOverlay, 2000)
+	}
+
+	var div = document.createElement('div')
+
+	div.appendChild(elem)
+	document.body.appendChild(div)
+})
+
+if (!playlists.length) {
+	var elem = document.createElement('p')
+	elem.innerHTML = 'You have no playlists yet!'
+	document.body.appendChild(elem)
+}
+	</script>
+</body>
+</html>
