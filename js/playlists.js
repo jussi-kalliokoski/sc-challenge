@@ -2,16 +2,18 @@ var Playlists = function () {
 
 var lists
 
-try {
-	lists = JSON.parse(localStorage.getItem('playlists'))
-} catch (e) {
-	/* in case it's the first time we're accessing the data */
-	lists = []
-}
-
-if (!lists) lists = []
-
 var Playlists = {
+	load: function () {
+		try {
+			lists = JSON.parse(localStorage.getItem('playlists'))
+		} catch (e) {
+			/* in case it's the first time we're accessing the data */
+			lists = []
+		}
+
+		if (!lists) lists = []
+	},
+
 	save: function () {
 		localStorage.setItem('playlists', JSON.stringify(lists))
 	},
@@ -41,7 +43,7 @@ var Playlists = {
 
 	getByShortName: function (sname) {
 		for (var i=0; i<lists.length; i++) {
-			if (lists[i].shorname === sname) return lists[i]
+			if (lists[i].shortname === sname) return lists[i]
 		}
 
 		return null
@@ -62,6 +64,8 @@ var Playlists = {
 		return lists.slice()
 	}
 }
+
+Playlists.load()
 
 return Playlists
 

@@ -24,10 +24,12 @@ function template (name, context) {
 var results = document.getElementById('results')
 var playlist = document.getElementById('playlist')
 var searchbox = document.getElementById('searchbox')
+var playlistName = document.getElementById('playlist-name')
+var playlistDescription = document.getElementById('playlist-description')
 
 var FoundTrack = {
 	addToPlaylist: function (elem) {
-		var track = new Track(elem)
+		var track = Track.fromElement(elem)
 
 		actions.dodo(function () {
 			Playlist.add(track)
@@ -40,7 +42,7 @@ var FoundTrack = {
 
 	addManyToPlaylist: function (elems) {
 		tracks = elems.map(function (elem) {
-			return new Track(elem)
+			return Track.fromElement(elem)
 		})
 
 		actions.dodo(function () {
@@ -57,14 +59,8 @@ var FoundTrack = {
 	}
 }
 
-function Track (elem) {
-	this.data = {
-		id: elem.dataset.id,
-		title: elem.dataset.title,
-		username: elem.dataset.username,
-		permalink: elem.dataset.permalink,
-		userPermalink: elem.dataset.userPermalink
-	}
+function Track (data) {
+	this.data = data
 
 	var fragment = document.createElement('div')
 	fragment.innerHTML = template('list-track', this.data)
@@ -78,6 +74,16 @@ function Track (elem) {
 		up: this.elem.querySelector('.btn.up'),
 		down: this.elem.querySelector('.btn.down')
 	}
+}
+
+Track.fromElement = function (elem) {
+	return new Track({
+		id: elem.dataset.id,
+		title: elem.dataset.title,
+		username: elem.dataset.username,
+		permalink: elem.dataset.permalink,
+		userPermalink: elem.dataset.userPermalink
+	})
 }
 
 Track.prototype = {
@@ -126,7 +132,118 @@ Track.prototype = {
 }
 
 var Playlist = {
+	name: '',
+	description: '',
+	sname: '',
 	list: [],
+
+	setName: function (v) {
+		Playlist.name = v
+		playlistName.innerHTML = ''
+
+		playlistName.appendChild(document.createTextNode(v))
+
+		var btn = document.createElement('a')
+		btn.className = 'edit'
+		btn.title = 'Edit playlist name'
+		btn.innerHTML = '<i class="icon-pencil"></i>'
+
+		playlistName.appendChild(btn)
+
+		btn.addEventListener('click', function () {
+			var name = prompt(
+				'Please enter new name:',
+				Playlist.name
+			)
+
+			if (!name) return
+
+			if (Playlists.getByName(name)) {
+				alert('A playlist by that name already exists!')
+				return
+			}
+
+			var oldName = Playlist.name
+
+			actions.dodo(function () {
+				Playlist.setName(name)
+			}, function () {
+				Playlist.setName(oldName)
+			})
+		})
+	},
+
+	setDescription: function (v) {
+		Playlist.description = v
+		playlistDescription.innerHTML = ''
+
+		playlistDescription.appendChild(document.createTextNode(v))
+
+		var btn = document.createElement('a')
+		btn.className = 'edit'
+		btn.title = 'Edit description'
+		btn.innerHTML = '<i class="icon-pencil"></i>'
+
+		playlistDescription.appendChild(btn)
+
+		btn.addEventListener('click', function () {
+			var description = prompt(
+				'Please enter new description:',
+				Playlist.description
+			)
+
+			if (!description) return
+
+			var oldDescription = Playlist.description
+
+			actions.dodo(function () {
+				Playlist.setDescription(description)
+			}, function () {
+				Playlist.setDescription(oldDescription)
+			})
+		})
+	},
+
+	load: function (sname) {
+		var list = Playlists.getByShortName(sname)
+
+		this.setName(list.name)
+		this.setDescription(list.description)
+		this.sname = list.shortname
+
+		this.list.splice(0, this.list.length)
+
+		if (!list.list.length) return
+
+		SC.get('/tracks', {
+			ids: list.list.join(',')
+		}, function (tracks) {
+			tracks.forEach(function (track) {
+				Playlist.add(new Track({
+					id: track.id,
+					title: track.title,
+					username: track.username,
+					permalink: track.permalink,
+					userPermalink: track.user.permalink
+				}))
+			})
+		})
+	},
+
+	save: function () {
+		/* make sure we don't write over changes made elsewhere */
+		Playlists.load()
+
+		var list = Playlists.getByShortName(this.sname)
+
+		list.name = this.name
+		list.description = this.description
+		list.list = this.list.map(function (track) {
+			return track.data.id
+		})
+
+		Playlists.save()
+	},
 
 	add: function (track, index) {
 		if (index >= 0 && this.list.length > index) {
@@ -234,6 +351,8 @@ Player = {
 	}
 }
 
+Playlist.load(location.pathname.split('/')[2])
+
 searchbox.onsubmit = function (e) {
 	Search.search(this.search.value)
 
@@ -246,6 +365,24 @@ searchbox.addAll.onclick = function (e) {
 	))
 
 	e.preventDefault()
+}
+
+searchbox.save.onclick = function (e) {
+	Playlist.save()
+
+	/* TODO: Notify the user */
+
+	e.preventDefault()
+}
+
+searchbox.playAll.onclick = function (e) {
+	e.preventDefault()
+
+	var track = Playlist.list[0]
+
+	if (!track) return
+
+	track.play()
 }
 
 document.addEventListener('click', function (e) {
