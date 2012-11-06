@@ -9,6 +9,7 @@
 	<script src="/js/playlists.js"></script>
 </head>
 <body>
+	<h1>Your playlists</h1>
 	<div id="playlist-list">
 		<button id="new-playlist" class="btn">
 			<i class="icon-plus-sign"></i>
@@ -27,31 +28,37 @@ playlists.forEach(function (playlist) {
 	elem.className = 'btn'
 
 	elem.addEventListener('click', function () {
-		location.href = '/playlists/' + playlist.name
+		location.href = '/playlists/' + playlist.shortname
 	}, true)
 
 	elem.appendChild(document.createTextNode(playlist.name))
 
-	playlistList.appendChild(elem)
+	var div = document.createElement('div')
+
+	div.appendChild(elem)
+	playlistList.appendChild(div)
 })
 
 if (!playlists.length) {
-	var elem = document.createElement('div')
+	var elem = document.createElement('p')
 	elem.innerHTML = 'You have no playlists yet!'
-	playlistList.appendChild(elem)
+	playlistList.insertBefore(elem, newPlaylistButton)
 }
 
 newPlaylistButton.addEventListener('click', function () {
 	var name = prompt('Please name your playlist:')
+	var list
 
 	try {
-		Playlists.create(name)
+		list = Playlists.create(name)
 	} catch (e) {
 		alert('A playlist by that name already exists!')
 		return
 	}
 
-	location.href = '/playlists/' + name
+	Playlists.save()
+
+	location.href = '/playlists/' + list.shortname
 }, true)
 	</script>
 </body>

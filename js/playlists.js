@@ -3,15 +3,17 @@ var Playlists = function () {
 var lists
 
 try {
-	lists = JSON.parse(localstorage.getItem('playlists'))
+	lists = JSON.parse(localStorage.getItem('playlists'))
 } catch (e) {
 	/* in case it's the first time we're accessing the data */
 	lists = []
 }
 
+if (!lists) lists = []
+
 var Playlists = {
 	save: function () {
-		localstorage.setItem('playlists', JSON.stringify(lists))
+		localStorage.setItem('playlists', JSON.stringify(lists))
 	},
 
 	create: function (name) {
@@ -21,7 +23,7 @@ var Playlists = {
 
 		lists.push({
 			name: name,
-			shortname: name.toLowerCase.replace(/[^a-z]+/g, '-'),
+			shortname: Playlists.createShortName(name),
 			description: '',
 			list: []
 		})
@@ -43,6 +45,17 @@ var Playlists = {
 		}
 
 		return null
+	},
+
+	createShortName: function (name) {
+		var sname = name.toLowerCase().replace(/[^a-z]+/g, '-')
+
+		while (Playlists.getByShortName(sname)) {
+			/* FIXME: This is not a good way to do it */
+			sname += '1'
+		}
+
+		return sname
 	},
 
 	getAll: function () {
