@@ -57,7 +57,7 @@ var FoundTrack = {
  * @method FoundTrack
  * @static
  *
- * @arg {DOMElement} The DOM element to parse the track's properties from.
+ * @arg {DOMElement} elem The DOM element to parse the track's properties from.
 */
 	addToPlaylist: function (elem) {
 		var track = Track.fromElement(elem)
@@ -77,7 +77,7 @@ var FoundTrack = {
  * @method FoundTrack
  * @static
  *
- * @arg {Array} The array of elements to parse the tracks' properties from.
+ * @arg {Array} elems The array of elements to parse the tracks' properties from.
 */
 	addManyToPlaylist: function (elems) {
 		tracks = elems.map(function (elem) {
@@ -390,7 +390,7 @@ var Playlist = {
  * @method Playlist
  * @static
  *
- * @arg {Track} The track to remove.
+ * @arg {Track} track The track to remove.
 */
 	remove: function (track) {
 		this.list.splice(this.list.indexOf(track), 1)
