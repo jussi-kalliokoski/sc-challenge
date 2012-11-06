@@ -21,7 +21,7 @@ var Playlists = {
 
 		lists.push({
 			name: name,
-			shortname: name.toLowerCase.replace(/[^a-z]+/g, '-')
+			shortname: name.toLowerCase.replace(/[^a-z]+/g, '-'),
 			description: '',
 			list: []
 		})
