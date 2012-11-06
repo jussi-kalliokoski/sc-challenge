@@ -49,7 +49,7 @@ var FoundTrack = {
 			})
 		}, function () {
 			tracks.forEach(function (track) {
-				playlist.remove(track)
+				Playlist.remove(track)
 			})
 		})
 
