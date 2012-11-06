@@ -118,6 +118,11 @@ function Track (data) {
 		up: this.elem.querySelector('.btn.up'),
 		down: this.elem.querySelector('.btn.down')
 	}
+
+	this.buttons.play.onclick = this.play.bind(this)
+	this.buttons.remove.onclick = this.remove.bind(this)
+	this.buttons.up.onclick = this.move.bind(this, 'up')
+	this.buttons.down.onclick = this.move.bind(this, 'down')
 }
 
 /**
@@ -578,7 +583,7 @@ searchbox.playAll.onclick = function (e) {
 	track.play()
 }
 
-document.addEventListener('click', function (e) {
+document.documentElement.addEventListener('click', function (e) {
 	if (isChildOf(e.target, searchbox)) return
 
 	Search.hideResults()

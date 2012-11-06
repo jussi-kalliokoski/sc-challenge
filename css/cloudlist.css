@@ -53,10 +53,18 @@
 }
 
 #player {
-	position: fixed;
-	left: 0;
-	bottom: 0;
+	position: relative;
+	margin-top: -200px;
 	border: none;
+}
+
+@media screen and (min-height: 600px) {
+	#player {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		margin-top: 0;
+	}
 }
 
 a.edit {
