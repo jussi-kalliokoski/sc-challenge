@@ -33,6 +33,10 @@ var Playlists = {
 		return lists[lists.length - 1]
 	},
 
+	remove: function (playlist) {
+		lists.splice(lists.indexOf(playlist), 1)
+	},
+
 	getByName: function (name) {
 		for (var i=0; i<lists.length; i++) {
 			if (lists[i].name === name) return lists[i]

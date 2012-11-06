@@ -24,18 +24,35 @@ var newPlaylistButton = document.getElementById('new-playlist')
 var playlists = Playlists.getAll()
 
 playlists.forEach(function (playlist) {
-	var elem = document.createElement('button')
-	elem.className = 'btn'
-
-	elem.addEventListener('click', function () {
-		location.href = '/playlists/' + playlist.shortname
-	}, true)
+	var elem = document.createElement('a')
+	elem.href = '/playlists/' + playlist.shortname
 
 	elem.appendChild(document.createTextNode(playlist.name))
+
+	var deleteButton = document.createElement('button')
+	deleteButton.className = 'btn btn-mini'
+	deleteButton.innerHTML = '<i class="icon-remove"></i>'
+	deleteButton.title = 'Delete playlist'
+
+	deleteButton.addEventListener('click', function () {
+		if (!confirm('Do you really want to delete this playlist?')) {
+			return
+		}
+
+		/* make sure we don't overwrite changes made elsewhere */
+		Playlists.load()
+		Playlists.remove(Playlists.getByShortName(playlists.shortname))
+		Playlists.save()
+
+		/* refresh */
+		location.href = location.href
+	}, true)
 
 	var div = document.createElement('div')
 
 	div.appendChild(elem)
+	div.appendChild(document.createTextNode(' '))
+	div.appendChild(deleteButton)
 	playlistList.appendChild(div)
 })
 
