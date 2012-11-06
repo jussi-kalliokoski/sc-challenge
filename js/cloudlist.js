@@ -1,4 +1,5 @@
 var actions = new UndoList()
+var nowPlaying = null
 
 function isChildOf (elem, parent) {
 	while (elem.parentNode) {
@@ -117,6 +118,10 @@ Track.prototype = {
 
 		this.buttons.up.disabled = !index
 		this.buttons.down.disabled = index === Playlist.list.length - 1
+	},
+
+	play: function () {
+		Player.play(this)
 	}
 }
 
@@ -182,6 +187,52 @@ var Search = {
 SC.initialize({
 	client_id: '8b747e71b3a505f84053f2076e40727b'
 })
+
+Player = {
+	elem: document.getElementById('player'),
+	widget: null,
+
+	play: function (track) {
+		if (nowPlaying) {
+			nowPlaying.track.elem.classList.remove('playing')
+			nowPlaying.track.buttons.play.disabled = false
+		}
+
+		if (!track) {
+			nowPlaying = null
+			return
+		}
+
+		nowPlaying = {
+			track: track,
+			index: Playlist.list.indexOf(track)
+		}
+
+		if (!this.widget) this.initWidget(track)
+
+		track.elem.classList.add('playing')
+		track.buttons.play.disabled = true
+
+		this.widget.load('http://api.soundcloud.com/tracks/' +
+			track.data.id)
+
+		this.widget.bind(SC.Widget.Events.READY, function () {
+			Player.widget.play()
+
+			Player.widget.bind(SC.Widget.Events.FINISH, function () {
+				var track = Playlist.list[nowPlaying.index + 1]
+
+				Player.play(track)
+			})
+		})
+	},
+
+	initWidget: function (track) {
+		this.elem.src = 'http://w.soundcloud.com/player/?url=http://api.soundcloud.com/tracks/' +
+			track.data.id
+		this.widget = SC.Widget(this.elem)
+	}
+}
 
 searchbox.onsubmit = function (e) {
 	Search.search(this.search.value)

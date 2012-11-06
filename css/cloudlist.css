@@ -27,6 +27,10 @@
 	padding: 8px;
 }
 
+.list-track.playing {
+	background: #dfdfdf;
+}
+
 .found-track {
 	position: relative;
 	margin: 3px;
@@ -42,4 +46,11 @@
 	float: right;
 	clear: right;
 	margin-top: -40px;
+}
+
+#player {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	border: none;
 }

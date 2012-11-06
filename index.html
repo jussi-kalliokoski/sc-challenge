@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/cloudlist.css" />
 	<script id="found-tracks-template" type="text/x-handlebars-template">
@@ -44,7 +45,7 @@
 		<a href="http://soundcloud.com/{{userPermalink}}">{{username}}</a>
 	</div>
 	<div class="btn-group">
-		<button class="btn play">
+		<button class="btn play" onclick="this.parentNode.parentNode.track.play()">
 			<i class="icon-play"></i>
 		</button>
 		<button class="btn remove" onclick="this.parentNode.parentNode.track.remove()">
@@ -62,9 +63,19 @@
 </head>
 <body>
 	<form id="searchbox" class="form-search">
-		<input class="input-medium search-query" name="search" type="search" placeholder="Type here to search!"  />
-		<button type="submit" class="btn"><i class="icon-search"></i> Search!</button>
-		<button class="btn" name="addAll" disabled><i class="icon-plus-sign"></i> Add all</button>
+		<input
+			class="input-medium search-query"
+			name="search"
+			type="search"
+			placeholder="Type here to search!" />
+
+		<button type="submit" class="btn">
+			<i class="icon-search"></i> Search!
+		</button>
+		<button class="btn" name="addAll" disabled>
+			<i class="icon-plus-sign"></i> Add all
+		</button>
+
 		<div id="results"></div>
 	</form>
 
@@ -72,7 +83,16 @@
 		
 	</div>
 
+	<iframe
+		width="100%"
+		height="200"
+		id="player"
+		scrolling="no"
+		frameborder="no">
+	</iframe>
+
 	<script src="http://connect.soundcloud.com/sdk.js"></script>
+	<script src="http://w.soundcloud.com/player/api.js"></script>
 	<script src="js/handlebars.js"></script>
 	<script src="js/mousetrap.min.js"></script>
 	<script src="js/undo-list.js"></script>
