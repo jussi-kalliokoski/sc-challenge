@@ -4,6 +4,6 @@ all: tests
 
 tests:
 	@echo $(TESTS)
-	@for i in $(TESTS); do echo "Running test $$i..."; ruby $$i; done
+	@for i in $(TESTS); do echo "Running test $$i..."; rspec $$i; done
 
 .PHONY: all tests
