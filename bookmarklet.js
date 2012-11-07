@@ -1,4 +1,4 @@
-void ($('.haudio.player').each(function () {
+void ($('div.player').each(function () {
 	var $player = $(this)
 	var $actions = $('.actions>.primary', $player)
 	var trackid = $player.attr('data-sc-track')
